@@ -4,14 +4,14 @@ namespace CashFlow.Core.Models
 {
     public class Cost
     {
-        public int Id { get; set; }
-        public int CategoryId { get; set; }
+        public virtual int Id { get; set; }
+        public virtual int CategoryId { get; set; }
 
-        public int Amount { get; set; }
-        public string Name { get; set; }
-        public DateTime PayDate { get; set; }
-
-        public Category Category { get; set; }
+        public virtual int Amount { get; set; }
+        public virtual string Name { get; set; }
+        public virtual DateTime PayDate { get; set; }
+        
+        public virtual Category Category { get; set; }
 
         // TODO: добавить планирование трат - дату запланированной траты, статус.
         // TODO: добавить отдельную сущность - циклическая плата, которая имеет цикличность, имеет постоянный статус, порождает конкретные платы, маячит в списке пока не оплатишь

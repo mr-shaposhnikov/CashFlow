@@ -8,18 +8,11 @@ namespace CashFlow.Core.Models
         public const string DEFAULT_COLOR = "#AAAAAA";
         public const string DEFAULT_GLYHPICON = "glyphicon-asterisk";
 
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public virtual int Id { get; set; }
+        public virtual string Name { get; set; }
+        public virtual string HexColor { get; set; } = DEFAULT_COLOR;
+        public virtual string Glyphicon { get; set; } = DEFAULT_GLYHPICON;
 
-        public string HexColor { get; set; } = DEFAULT_COLOR;
-        public Color Color
-        {
-            get => ColorTranslator.FromHtml(HexColor);
-            set => HexColor = ColorTranslator.ToHtml(value);
-        }
-
-        public string Glyphicon { get; set; } = DEFAULT_GLYHPICON;
-
-        public IList<Cost> Costs { get; set; }
+        public virtual IList<Cost> Costs { get; set; }
     }
 }

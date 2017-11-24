@@ -14,4 +14,28 @@ namespace CashFlow.Core.Mappings
             Map(x => x.Date).Not.Nullable().Default("getDate()");
         }
     }
+
+    //public class CashMap : ClassMapping<Cash>
+    //{
+    //    public CashMap()
+    //    {
+    //        Id(x => x.Id, m => m.Generator(Generators.Native));
+
+    //        Property(x => x.Amount, m => m.Column(c =>
+    //        {
+    //            c.NotNullable(true);
+    //        }));
+
+    //        Property(x => x.Name, m => m.Column(c =>
+    //        {
+    //            c.Length(500);
+    //        }));
+
+    //        Property(x => x.Date, m => m.Column(c =>
+    //        {
+    //            c.NotNullable(true);
+    //            c.Default("getDate()");
+    //        }));
+    //    }
+    //}
 }

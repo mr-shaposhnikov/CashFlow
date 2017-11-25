@@ -10,8 +10,8 @@ namespace CashFlow.Core.Mappings
             Id(x => x.Id);
 
             Map(x => x.Amount).Not.Nullable();
-            Map(x => x.Name).Length(500);
-            Map(x => x.PayDate).Not.Nullable().Default("getDate()");
+            Map(x => x.Name).Nullable().Length(500);
+            Map(x => x.PayDate).Not.Nullable().Default("GETUTCDATE()");
 
             References(x => x.Category).Not.Nullable().Column(nameof(Cost.CategoryId)).Cascade.SaveUpdate();
         }

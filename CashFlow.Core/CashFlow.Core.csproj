@@ -71,6 +71,7 @@
     <Compile Include="Repositories\CashRepository.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
     <Compile Include="Repositories\CostRepository.cs" />
+    <Compile Include="SqlDateTime.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

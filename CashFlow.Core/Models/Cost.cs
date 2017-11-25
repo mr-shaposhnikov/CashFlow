@@ -9,7 +9,7 @@ namespace CashFlow.Core.Models
 
         public virtual int Amount { get; set; }
         public virtual string Name { get; set; }
-        public virtual DateTime PayDate { get; set; }
+        public virtual DateTime PayDate { get; set; } = DateTime.UtcNow;
         
         public virtual Category Category { get; set; }
 

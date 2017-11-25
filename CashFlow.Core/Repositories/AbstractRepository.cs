@@ -20,21 +20,33 @@ namespace CashFlow.Core.Repositories
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
 
-            Session.Save(value);
+            using (var tran = Session.BeginTransaction())
+            {
+                Session.Save(value);
+                tran.Commit();
+            }
         }
 
         public void Update([NotNull] T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
 
-            Session.Update(value);
+            using (var tran = Session.BeginTransaction())
+            {
+                Session.SaveOrUpdate(value);
+                tran.Commit();
+            }
         }
 
         public void Delete([NotNull] T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-
-            Session.Delete(value);
+            
+            using (var tran = Session.BeginTransaction())
+            {
+                Session.Delete(value);
+                tran.Commit();
+            }
         }
 
         public abstract T SingleBy(Expression<Func<T, bool>> query);

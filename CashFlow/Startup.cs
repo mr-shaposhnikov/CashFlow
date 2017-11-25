@@ -1,8 +1,8 @@
 ﻿using CashFlow.Core.Models;
+using CashFlow.Core.Repositories;
 using Castle.MicroKernel.Registration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NHibernate;
@@ -16,13 +16,14 @@ namespace CashFlow
 {
     public class Startup
     {
-        public static readonly WindsorContainer IoContainer = BootstrapIoContainer();
+        // TODO: избавиться от ссылок на IoC по проекту
+        public static WindsorContainer IoContainer { get; } = BootstrapIoContainer();
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var s = IoContainer.Resolve<NHibernate.ISession>();
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -30,15 +31,9 @@ namespace CashFlow
         {
             loggerFactory.AddConsole();
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            // TODO: Json ошибку в ответ возвращать
 
-            app.Run(async context =>
-            {
-                await context.Response.WriteAsync("Hello World!");
-            });
+            app.UseMvc();
         }
 
         private static WindsorContainer BootstrapIoContainer()
@@ -80,40 +75,29 @@ namespace CashFlow
                 })
                 .LifeStyle.Singleton);
 
+            // TODO: использовать LifeStyle.PerWebRequest вместо LifeStyle.Singleton для репозиториев и сессии
+
             container.Register(Component
                 .For<NHibernate.ISession>()
                 .UsingFactoryMethod(kernel => kernel.Resolve<ISessionFactory>().OpenSession())
-                );
-                // TODO: .LifeStyle.PerWebRequest);
+                .LifeStyle.Transient);
+
+            container.Register(Component
+                .For<ICategoryRepository>()
+                .ImplementedBy<CategoryRepository>()
+                .LifeStyle.Transient);
+
+            container.Register(Component
+                .For<ICashRepository>()
+                .ImplementedBy<CashRepository>()
+                .LifeStyle.Transient);
+
+            container.Register(Component
+                .For<ICostRepository>()
+                .ImplementedBy<CostRepository>()
+                .LifeStyle.Transient);
 
             return container;
         }
-
-        //private static NHibernate.Cfg.Configuration ConfigureNHibernate()
-        //{
-        //    var cfg = new NHibernate.Cfg.Configuration();
-        //    cfg.SessionFactoryName("BuildIt");
-        //    cfg.DataBaseIntegration(db =>
-        //    {
-        //        db.Dialect();
-        //        db.Driver();
-        //        db.KeywordsAutoImport = Hbm2DDLKeyWords.AutoQuote;
-        //        db.IsolationLevel = IsolationLevel.ReadCommitted;
-
-        //        db.ConnectionStringName = "NH3";
-        //        db.Timeout = 10;
-
-        //        // enabled for testing
-        //        db.LogFormattedSql = true;
-        //        db.LogSqlInConsole = true;
-        //        db.AutoCommentSql = true;
-        //    });
-
-        //    var mapping = GetMappings();
-        //    cfg.AddDeserializedMapping(mapping, "NHSchemaCashFlow");
-        //    SchemaMetadataUpdater.QuoteTableAndColumns(cfg);
-
-        //    return cfg;
-        //}
     }
 }

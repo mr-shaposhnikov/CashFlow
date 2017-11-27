@@ -32,11 +32,25 @@ namespace CashFlow
             services.AddMvc();
 
             // WARNING: Исправляем ошибку, из-за которой вместо массива трат CostController.Get() возвращал только первую трату
-            services.AddMvc().AddJsonOptions(options => {
+            services.AddMvc().AddJsonOptions(options =>
+            {
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
+            
+            IoContainerConfigure(services);
+        }
+        
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        {
+            loggerFactory.AddConsole();
 
-            #region IoC
+            // TODO: Json ошибку в ответ возвращать
+
+            app.UseMvc();
+        }
+
+        private void IoContainerConfigure(IServiceCollection services)
+        {
             services.AddSingleton<IConnectionString, ConnectionString>(srvProvider =>
             {
                 var connectionStringSection = AppConfiguration.GetSection("ConnectionStrings");
@@ -74,17 +88,6 @@ namespace CashFlow
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICashRepository, CashRepository>();
             services.AddScoped<ICostRepository, CostRepository>();
-            #endregion
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
-            loggerFactory.AddConsole();
-
-            // TODO: Json ошибку в ответ возвращать
-
-            app.UseMvc();
         }
     }
 }

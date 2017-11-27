@@ -1,21 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using CashFlow.Core.Models;
 using CashFlow.Core.Repositories;
+using JetBrains.Annotations;
 
 namespace CashFlow.Controllers
 {
     [Route("api/[controller]")]
     public class CostController : Controller
     {
-        private readonly ICostRepository _repository = Startup.IoContainer.Resolve<ICostRepository>();
-        private readonly ICategoryRepository _categoryRepository = Startup.IoContainer.Resolve<ICategoryRepository>();
+        private readonly ICostRepository _repository;
+        private readonly ICategoryRepository _categoryRepository;
+
+        public CostController([NotNull] ICostRepository repository, [NotNull] ICategoryRepository categoryRepository)
+        {
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository)); ;
+        }
 
         // GET: api/values
         [HttpGet]
         public IEnumerable<Cost> Get()
         {
-            return _repository.Select();
+            var results = _repository.Select();
+            return results;
         }
 
         // GET api/values/5
@@ -29,10 +38,6 @@ namespace CashFlow.Controllers
         [HttpPost]
         public void Post([FromBody]Cost value)
         {
-            if (value?.CategoryId > 0)
-            {
-                value.Category = _categoryRepository.SingleBy(x => x.Id == value.CategoryId);
-            }
             _repository.Insert(value);
         }
 

@@ -13,7 +13,10 @@ namespace CashFlow.Core.Mappings
             Map(x => x.HexColor).Length(7).Not.Nullable().Default($"'{Category.DEFAULT_COLOR}'");
             Map(x => x.Glyphicon).Length(200).Not.Nullable().Default($"'{Category.DEFAULT_GLYHPICON}'");
 
-            HasMany(x => x.Costs).Inverse().Cascade.All().KeyColumn(nameof(Cost.CategoryId));
+            HasMany(x => x.Costs)
+                .KeyColumn(nameof(Cost.CategoryId))
+                .Inverse()
+                .Cascade.All();
         }
     }
 

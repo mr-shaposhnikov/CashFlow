@@ -16,7 +16,7 @@ namespace CashFlow.Core.Repositories
             Session = session ?? throw new ArgumentNullException(nameof(session));
         }
 
-        public void Insert([NotNull] T value)
+        public virtual void Insert([NotNull] T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
 
@@ -27,7 +27,7 @@ namespace CashFlow.Core.Repositories
             }
         }
 
-        public void Update([NotNull] T value)
+        public virtual void Update([NotNull] T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
 
@@ -38,7 +38,7 @@ namespace CashFlow.Core.Repositories
             }
         }
 
-        public void Delete([NotNull] T value)
+        public virtual void Delete([NotNull] T value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             

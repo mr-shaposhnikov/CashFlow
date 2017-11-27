@@ -1,15 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using CashFlow.Core.Models;
 using CashFlow.Core.Repositories;
+using JetBrains.Annotations;
 
 namespace CashFlow.Controllers
 {
     [Route("api/[controller]")]
     public class CashController : Controller
     {
-        private readonly ICashRepository _repository = Startup.IoContainer.Resolve<ICashRepository>();
-        
+        private readonly ICashRepository _repository;
+
+        public CashController([NotNull] ICashRepository repository)
+        {
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository)); ;
+        }
+
         // GET: api/values
         [HttpGet]
         public IEnumerable<Cash> Get()

@@ -12,8 +12,9 @@ namespace CashFlow.Core.Mappings
             Map(x => x.Amount).Not.Nullable();
             Map(x => x.Name).Nullable().Length(500);
             Map(x => x.PayDate).Not.Nullable().Default("GETUTCDATE()");
-
-            References(x => x.Category).Not.Nullable().Column(nameof(Cost.CategoryId)).Cascade.SaveUpdate();
+            Map(x => x.CategoryId).Not.Nullable();
+            
+            References(x => x.Category).ForeignKey(nameof(Cost.CategoryId)).Cascade.All();
         }
     }
 

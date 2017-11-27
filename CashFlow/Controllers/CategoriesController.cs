@@ -1,14 +1,21 @@
-﻿using CashFlow.Core.Models;
+﻿using System;
+using CashFlow.Core.Models;
 using CashFlow.Core.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace CashFlow.Controllers
 {
     [Route("api/[controller]")]
     public class CategoriesController : Controller
     {
-        private readonly ICategoryRepository _repository = Startup.IoContainer.Resolve<ICategoryRepository>();
+        private readonly ICategoryRepository _repository;
+
+        public CategoriesController([NotNull] ICategoryRepository repository)
+        {
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository)); ;
+        }
 
         // GET: api/values
         [HttpGet]

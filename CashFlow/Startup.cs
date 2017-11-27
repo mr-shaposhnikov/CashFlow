@@ -1,4 +1,5 @@
-﻿using CashFlow.Core.Models;
+﻿using System;
+using CashFlow.Core.Models;
 using CashFlow.Core.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +9,7 @@ using NHibernate;
 using NHibernate.Tool.hbm2ddl;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 
@@ -15,20 +17,32 @@ namespace CashFlow
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        public IConfiguration AppConfiguration { get; set; }
+
+        public Startup(IHostingEnvironment env)
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json");
+            AppConfiguration = builder.Build();
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
 
-            // Исправляем ошибку, из-за которой вместо массива трат CostController.Get() возвращал только первую трату
+            // WARNING: Исправляем ошибку, из-за которой вместо массива трат CostController.Get() возвращал только первую трату
             services.AddMvc().AddJsonOptions(options => {
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
 
             #region IoC
-            var connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + System.AppDomain.CurrentDomain.BaseDirectory + "Data\\cashflow.mdf" + ";Integrated Security=True;";
-            services.AddSingleton<IConnectionString, ConnectionString>(srvProvider => new ConnectionString(connectionString));
+            services.AddSingleton<IConnectionString, ConnectionString>(srvProvider =>
+            {
+                var connectionStringSection = AppConfiguration.GetSection("ConnectionStrings");
+                var connectionString = connectionStringSection.GetSection("DefaultConnection").Value ?? throw new ArgumentNullException("Connection string not found!");
+                return new ConnectionString(connectionString);
+            });
 
             services.AddSingleton(srvProvider =>
             {

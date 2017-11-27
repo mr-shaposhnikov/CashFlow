@@ -2,9 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
+    <UserSecretsId>52f28a42-e77a-4217-9d1d-5d0e69752b92</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Properties\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

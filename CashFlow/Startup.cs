@@ -14,7 +14,7 @@ using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 
 namespace CashFlow
 {
-    public class Startup
+    public class Startup    
     {
         // TODO: избавиться от ссылок на IoC по проекту
         public static WindsorContainer IoContainer { get; } = BootstrapIoContainer();
